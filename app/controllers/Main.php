@@ -4,6 +4,7 @@ namespace GymSolution\Controllers;
 
 use GymSolution\Controllers\BaseController;
 use GymSolution\Models\Main as ModelsMain;
+use GymSolution\Models\UserModel;
 
 class Main extends BaseController
 {
@@ -290,8 +291,9 @@ class Main extends BaseController
         exit();
     }
 
+    // ========================================= APP CONTROLLER AQUI =======================================
 
-    // =============== APP CONTROLLER AQUI ===================
+    // =============== CALCULOS CONTROLLER ===================
     public function calculos()
     {
 
@@ -301,11 +303,195 @@ class Main extends BaseController
             return;
         }
 
+        $data = [];
+
+        if (!empty($_SESSION['validation_errors'])) {
+            $data['validation_errors'] = $_SESSION['validation_errors'];
+            unset($_SESSION['validation_errors']);
+        }
+
+        // check if there was an invalid login
+        if (!empty($_SESSION['server_error'])) {
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
         $data['user'] = $_SESSION['user'];
 
         $this->view('shared/html_header');
         $this->view('navbar', $data);
         $this->view('calculos', $data);
         $this->view('shared/html_footer');
+    }
+
+    public function calculos_submit()
+    {
+
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->index();
+            return;
+        }
+
+        // check if there are validation errors to return to the form
+        if (!empty($validation_errors)) {
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->calculos();
+            return;
+        }
+        echo "<pre>";
+        print_r($_POST);
+
+
+        $model = new UserModel();
+        //$model->add_user_data($_POST);
+
+        $this->userdata_table();
+        return;
+    }
+    public function calculos_submitM()
+    {
+
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->index();
+            return;
+        }
+
+        // check if there are validation errors to return to the form
+        if (!empty($validation_errors)) {
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->calculos();
+            return;
+        }
+
+
+        $model = new UserModel();
+        $model->add_user_dataM($_POST);
+
+        $this->userdata_table();
+        return;
+    }
+
+    public function calculos_submitF()
+    {
+
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->index();
+            return;
+        }
+
+        // check if there are validation errors to return to the form
+        if (!empty($validation_errors)) {
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->calculos();
+            return;
+        }
+
+
+        $model = new UserModel();
+        $model->add_user_dataF($_POST);
+
+        $this->userdata_table();
+        return;
+    }
+
+
+    // =============== USER_DATA CONTROLLERS ===========================
+    public function userdata_table()
+    {
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $model->get_user_data($id);
+
+
+        //erro aqui
+        $data['user_data'] = $_SESSION['user_data'];
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('userdata_table', $data);
+        $this->view('shared/html_footer');
+    }
+
+
+    // =============== PLANNER CONTROLLERS ===========================
+    public function planner()
+    {
+
+        $data = $_SESSION['user'];
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $model->get_user_data($id);
+
+
+        //erro aqui
+        $data['user_data'] = $_SESSION['user_data'];
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('planner', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function planner_form()
+    {
+
+        $data = $_SESSION['user'];
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $model->get_user_data($id);
+
+
+        //erro aqui
+        $data['user_data'] = $_SESSION['user_data'];
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('planner_form', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function planner_submit()
+    {
+
+        $data = $_SESSION['user'];
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+
     }
 }

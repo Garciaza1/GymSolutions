@@ -70,26 +70,27 @@ if ($_SESSION) {
         </p>
 
         <hr>
+        colocar dorpdown ao lado e descer o form
         <?php if($user_sex == 'f'):?>
         <div class="container">
             <div class="row justify-content-center">
-                <form class="col-6">
+                <form action="?ct=main&mt=calculos_submitF" method="post" class="col-6">
                     <h3> Para mulheres: </h3>
                     <div class="mb-3">
                         <label for="alturaF" class="form-label">Altura (cm)</label>
-                        <input type="number" class="form-control" id="alturaF">
+                        <input type="number" name="altura" class="form-control" id="alturaF">
                     </div>
                     <div class="mb-3">
                         <label for="cintura" class="form-label">Cintura (cm)</label>
-                        <input type="number" class="form-control" id="cintura">
+                        <input type="number" name="cintura" class="form-control" id="cintura">
                     </div>
                     <div class="mb-3">
                         <label for="quadril" class="form-label">Quadril (cm)</label>
-                        <input type="number" class="form-control" id="quadril">
+                        <input type="number" name="quadril" class="form-control" id="quadril">
                     </div>
                     <div class="mb-3">
-                        <label for="pescoçoF" class="form-label">Pescoço (cm)</label>
-                        <input type="number" class="form-control" id="pescoçoF">
+                        <label for="pescocoF" class="form-label">Pescoço (cm)</label>
+                        <input type="number" name="pescoco" class="form-control" id="pescocoF">
                     </div>
                     <button type="submit" class="btn btn-primary" id="calcularF">Calcular</button>
                 </form>
@@ -102,20 +103,20 @@ if ($_SESSION) {
         <?php else: ?>
         <div class="container">
             <div class="row justify-content-center">
-                <form class="col-6">
+                <form action="?ct=main&mt=calculos_submitM" method="post" class="col-6">
                 <h3> Para Homens: </h3>
                 <br>
                     <div class="mb-3">
                         <label for="alturaM" class="form-label">Altura (cm)</label>
-                        <input type="number" class="form-control" id="alturaM">
+                        <input type="number" name="altura" class="form-control" id="alturaM">
                     </div>
                     <div class="mb-3">
                         <label for="abdomen" class="form-label">abdomen (cm)</label>
-                        <input type="number" class="form-control" id="abdomen">
+                        <input type="number" name="cintura" class="form-control" id="abdomen">
                     </div>
                     <div class="mb-3">
-                        <label for="pescoçoM" class="form-label">Pescoço (cm)</label>
-                        <input type="number" class="form-control" id="pescoçoM">
+                        <label for="pescocoM" class="form-label">Pescoço (cm)</label>
+                        <input type="number" name="pescoco"class="form-control" id="pescocoM">
                     </div>
                     <button type="submit" class="btn btn-primary" id="calcularM" >Calcular</button>
                 </form>
@@ -149,7 +150,7 @@ if ($_SESSION) {
     <hr>
 
     <div>
-        <h3>Calculadora de Metabolismo Basal</h3>
+        <h3>Calculadora de Metabolismo Basal</h3> 
         <div class="container">
             <div class="row justify-content-center">
                 <form>
@@ -178,10 +179,10 @@ if ($_SESSION) {
         function calcularPercentualGorduraF() {
             var cintura = parseFloat(document.getElementById("cintura").value);
             var quadril = parseFloat(document.getElementById("quadril").value);
-            var pescoçoF = parseFloat(document.getElementById("pescoçoF").value);
+            var pescocoF = parseFloat(document.getElementById("pescocoF").value);
             var alturaF = parseFloat(document.getElementById("alturaF").value);
 
-            var BFf = 163.205 * 1 * (cintura + quadril - pescoçoF) - 97.684 * 1 * alturaF - 104.912;
+            var BFf = 163.205 * 1 * (cintura + quadril - pescocoF) - 97.684 * 1 * alturaF - 104.912;
 
             strongF.textContent = "Seu Percentual de gordura é: " + BFf.toFixed(2) + "%";
             strongF.classList.remove("d-none");
@@ -189,10 +190,10 @@ if ($_SESSION) {
 
         function calcularPercentualGorduraM() {
             var abdomen = parseFloat(document.getElementById("abdomen").value);
-            var pescoçoM = parseFloat(document.getElementById("pescoçoM").value);
+            var pescocoM = parseFloat(document.getElementById("pescocoM").value);
             var alturaM = parseFloat(document.getElementById("alturaM").value);
 
-            var BFm = 86.010 * 1 * (abdomen - pescoçoM) - 70.041 * 1 * alturaM + 30.30;
+            var BFm = 86.010 * 1 * (abdomen - pescocoM) - 70.041 * 1 * alturaM + 30.30;
 
             strongM.textContent = "Seu Percentual de gordura é: " + BFm.toFixed(2) + "%";
             strongM.classList.remove("d-none");
