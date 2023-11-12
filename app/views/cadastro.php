@@ -32,7 +32,7 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6 col-sm-12">
-                                    <div>Sexo</div>
+                                    <div>Sexo (de nascimento)</div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="radio_gender" id="radio_m" value="m" checked>
                                         <label class="form-check-label" for="radio_m">Masculino</label>
@@ -40,10 +40,6 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="radio_gender" id="radio_f" value="f">
                                         <label class="form-check-label" for="radio_f">Feminino</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="radio_gender" id="radio_o" value="o">
-                                        <label class="form-check-label" for="radio_o">Outro</label>
                                     </div>
                                 </div>
 

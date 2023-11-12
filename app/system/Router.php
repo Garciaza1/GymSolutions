@@ -14,11 +14,11 @@ class Router
         $method = 'index';
 
         // check uri parameters
-        if(isset($_GET['ct'])){
+        if (isset($_GET['ct'])) {
             $controller = $_GET['ct'];
         }
 
-        if(isset($_GET['mt'])){
+        if (isset($_GET['mt'])) {
             $method = $_GET['mt'];
         }
 
@@ -26,25 +26,34 @@ class Router
         $parameters = $_GET;
 
         // remove controller from parameters
-        if(key_exists("ct", $parameters)) {
+        if (key_exists("ct", $parameters)) {
             unset($parameters["ct"]);
         }
 
         // remove method from parameters
-        if(key_exists("mt", $parameters)) {
+        if (key_exists("mt", $parameters)) {
             unset($parameters["mt"]);
         }
 
-        // tries to instanciate the controller and execute the method
+        // Check if 'id' is present and is the last parameter
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+
+        // tries to instantiate the controller and execute the method
         try {
             $class = "GymSolution\Controllers\\$controller";
-            $controller = new $class();
-            $controller->$method(...$parameters);
+            $controllerInstance = new $class();
+        
+            // Verifica se 'id' está presente nos parâmetros
+            if (isset($parameters['id'])) {
+                $controllerInstance->$method($parameters['id']);
+            } else {
+                $controllerInstance->$method(...$parameters);
+            }
         } catch (\Throwable $th) {
+            $_SESSION['router'] = $th;
             $controller = new \GymSolution\Controllers\Main(); // Instancia o controlador Main
-            $controller->acesso_negado($th); // Chama a função acesso_negado
+            $controller->acesso_negado($th->getMessage()); // Chama a função acesso_negado
             exit();
-
         }
     }
 }

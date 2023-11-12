@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="assets/images/logo_32.png" type="image/png">
+    <link rel="shortcut icon" href="<?= IMAGE_PATH . "KEVIN-1_vetor2"?>" type="image/png">
     <title><?= APP_NAME ?></title>
 
     <!-- google fonts -->
@@ -29,20 +30,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-
+    <!-- datatables -->
+    <link href="https://cdn.datatables.net/v/dt/dt-1.13.7/datatables.min.css" rel="stylesheet">
     <!--   JQuery   -->
-    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script defer src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script defer src="https://cdn.datatables.net/v/dt/dt-1.13.7/datatables.min.js"></script>
 
     <!-- links dos arquivos assets -->
     <link rel="stylesheet" href="<?= CSS_PATH ?>">
     <script defer src="<?= JS_PATH ?>"></script>
     <!-- CONT IMAGE_PATH . " NOME DA IMAGEM " -->
 
-    <link rel="icon" href="<?= IMAGE_PATH . 'KEVIN-1_vetor2.png'?>" type="image/x-icon">
+    <link rel="icon" href="<?= IMAGE_PATH . 'KEVIN-1_vetor2.png' ?>" type="image/x-icon">
     <title>GymSolution</title>
     <!--colocar icone no site-->
 
-    
+
 </head>
+
 <body>

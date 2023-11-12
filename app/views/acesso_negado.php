@@ -5,4 +5,15 @@
     <p>Você não tem permissão para acessar esta página.</p>
     
     <a href="?ct=main&mt=index">Voltar à Página Inicial</a>
+
+
+    <div class="text-start">
+        pilha de logs da sessão:
+        <pre>
+            <?php
+                print_r($data);
+            ?>
+        </pre>
+
+    </div>
 </div>

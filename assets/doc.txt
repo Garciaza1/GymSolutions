@@ -1,0 +1,23 @@
+pendencias:
+
+    COLOCAR A OPÇÃO DE JA SABER O BASAL OU O BF EM RADIO BUTTONS
+
+    verificar pq o js não esta funcionando da forma correta(voltou a funcionar) acertar os calculos
+    masculino ou feminino APENAS EM JS.
+
+    arrumar os calculos e colocar IMC na tabela
+
+    a apresentação de dados do usuario tem q ser melhorada a tabela fica em segunda pagina
+    e primeira pgn nos mostramos a valor do ultimo id UserModel desta pessoa
+
+    tirar o informações sobre o corpo e deixar no acesso livre no navbar do home (estilizar as duas paginas)
+
+    verificar os erros do outro login de usuario femiinino e conferir os calculos. (erros: controllers)
+
+
+final do projeto:
+    
+    deixar o planner ok
+    estilizar com css as paginas usando vermelho possivelmente amarelo ou azul ou verde 
+    tirar os prints 
+    fazer a pagina de apresentação home com bastante JS para deixar dinamico e bonito.

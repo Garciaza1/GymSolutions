@@ -2,25 +2,11 @@
 namespace GymSolution\Controllers;
 
 use GymSolution\Controllers\BaseController;
+use GymSolution\Controllers\Main;
 use GymSolution\Models\Main as ModelsMain;
 
 class App extends BaseController
 {
-
-    
-    public function calculos(){
-        
-
-        $data['user'] = $_SESSION['user'];
-
-        $this->view('shared/html_header');
-        $this->view('navbar', $data);
-        $this->view('calculos', $data);
-        $this->view('shared/html_footer');
-
-
-    }
-
 
 /*
 

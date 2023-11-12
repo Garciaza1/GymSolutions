@@ -14,9 +14,9 @@ if ($_SESSION) {
 
     $email = $data['user']['email'];
     $idade = $data['user']['idade'];
+    $sexo = $data['user']['sexo'];
     $user_id = $data['user']['id'];
 }
-
 ?>
 
 <div class="container-fluid bng-navbar">
@@ -31,7 +31,12 @@ if ($_SESSION) {
 
         <div class="text-center col-4 pt-4">
             <?php if ($logado) : ?>
-                <h2>Bem-vindo! <span class="" style=" font-style: italic;"><?= $primeiro_nome ?></span></h2>
+                <?php if ($sexo == 'm') : ?>
+                    <h2>Bem-vindo! <span class="" style=" font-style: italic;"><?= $primeiro_nome ?></span></h2>
+                <?php endif; ?>
+                <?php if ($sexo == 'f') : ?>
+                    <h2>Bem-vinda! <span class="" style=" font-style: italic;"><?= $primeiro_nome ?></span></h2>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
 
@@ -59,17 +64,17 @@ if ($_SESSION) {
 
                 <div class="text-end col-4 mt-2 ">
                     <button class="btn btn-dark m-2" type="button">
-                    <i class="fa-solid fa-medal me-2"></i></i>
+                        <i class="fa-solid fa-medal me-2"></i></i>
                         <a href="?ct=main&mt=login" style="text-decoration: none; color: white;">Entrar</a>
                     </button>
 
                     <button class="btn btn-dark m-2" type="button">
-                    <i class="fa-solid fa-person-skiing me-2"></i></i>
+                        <i class="fa-solid fa-person-skiing me-2"></i></i>
                         <a href="?ct=main&mt=cadastro" style="text-decoration: none; color: white;">Cadastrar</a>
                     </button>
                 </div>
-                <?php endif; ?>
+            <?php endif; ?>
             </div>
-        <hr>
+            <hr>
     </div>
 </div>

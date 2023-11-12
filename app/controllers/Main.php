@@ -9,7 +9,6 @@ use GymSolution\Models\UserModel;
 class Main extends BaseController
 {
 
-
     public function home()
     {
 
@@ -24,10 +23,13 @@ class Main extends BaseController
     public function acesso_negado()
     {
 
-        $data = [];
+        if (isset($_SESSION['erro'])) $data['erro'] = $_SESSION['erro'];
+        $data['request'] = $_REQUEST;
+        $data['session'] = $_SESSION;
+        $data['cookie'] = $_COOKIE;
+        $data['get'] = $_GET;
 
         $this->view('shared/html_header');
-        $this->view('navbar', $data);
         $this->view('acesso_negado', $data);
         $this->view('shared/html_footer');
     }
@@ -291,10 +293,65 @@ class Main extends BaseController
         exit();
     }
 
+
+
+
+
     // ========================================= APP CONTROLLER AQUI =======================================
 
-    // =============== CALCULOS CONTROLLER ===================
-    public function calculos()
+
+
+
+
+    // =============== PERFIL CONTROLLER ===================
+
+    public function perfil()
+    {
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $data['user_data'] = $model->get_last_user_data($id);
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('perfil', $data);
+        $this->view('shared/html_footer');
+    }
+
+
+    public function user_profile()
+    {
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $data['user_data'] = $model->get_last_user_data($id);
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('user_profile', $data);
+        $this->view('shared/html_footer');
+    }
+
+
+
+
+    // =============== CALCULOS CONTROLLER ===========================
+
+    public function calculos() //pagina sobre a saúde e metabolismo
     {
 
         // check if there is no active user in session and blocks if hasn't
@@ -324,7 +381,54 @@ class Main extends BaseController
         $this->view('shared/html_footer');
     }
 
-    public function calculos_submit()
+    public function calculos_forms() // identifica por sexo em js
+    {
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('calculos_forms', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function novas_medidas() //aponta para o calculo_submit
+    {
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data = [];
+
+        if (!empty($_SESSION['validation_errors'])) {
+            $data['validation_errors'] = $_SESSION['validation_errors'];
+            unset($_SESSION['validation_errors']);
+        }
+
+        // check if there was an invalid login
+        if (!empty($_SESSION['server_error'])) {
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+        $data['user'] = $_SESSION['user'];
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('novas_medidas', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function medidas_submit() //recebe de novas_medidas
     {
 
 
@@ -334,74 +438,105 @@ class Main extends BaseController
             return;
         }
 
-        // check if there are validation errors to return to the form
-        if (!empty($validation_errors)) {
-            $_SESSION['validation_errors'] = $validation_errors;
-            $this->calculos();
-            return;
-        }
-        echo "<pre>";
-        print_r($_POST);
 
-
-        $model = new UserModel();
-        //$model->add_user_data($_POST);
-
-        $this->userdata_table();
-        return;
-    }
-    public function calculos_submitM()
-    {
-
-
-        // check if there is no active user in session and blocks if hasn't
-        if (!check_session()) {
+        // Verifica se foi feita uma requisição POST
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             $this->index();
             return;
         }
 
-        // check if there are validation errors to return to the form
+        // Inicializa o array de erros de validação
+        $validation_errors = [];
+
+        //valida todos os campos tendo que preenchelos.
+        $campos = ['altura', 'peso', 'cintura', 'quadril', 'pescoco', 'braco', 'antebraco', 'panturrilha', 'perna', 'cinturaEscapular'];
+        foreach ($campos as $campo) {
+            // Verifica se o campo está vazio
+            if (empty($_POST['text_' . $campo])) {
+                $validation_errors[] = ucfirst($campo) . ' é obrigatório.';
+            }
+        }
+
+        // Validação do campo de meta
+        if (empty($_POST['text_meta'])) {
+            $validation_errors[] = 'A meta é obrigatória.';
+        }
+
+
+        // Se houver erros de validação, redireciona de volta ao formulário com os erros
         if (!empty($validation_errors)) {
             $_SESSION['validation_errors'] = $validation_errors;
-            $this->calculos();
+            $this->novas_medidas(); // ou o nome da função que exibe o formulário
             return;
         }
+
+        // reformatação dos campos....
+        $_POST['text_braco'];
+        $_POST['text_antebraco'];
+        $_POST['text_panturrilha'];
+        $_POST['text_perna'];
+        $_POST['text_cinturaEscapular'];
+        $_POST['text_meta'];
+
+        $sexo = $_SESSION['user']['sexo'];
+        $idade = $_SESSION['user']['idade'];
+
+        $altura = $_POST['text_altura'];
+        $peso = $_POST['text_peso'];
+        $cintura = $_POST['text_cintura'];
+        $quadril = $_POST['text_quadril'];
+        $pescoco = $_POST['text_pescoco'];
+
+        // os calculos ficarão aqui e serão colocados na tebela
+
+        // Cálculo do Percentual de Gordura (%)
+        if ($sexo == 'm') {
+            $gorduram = 86.010 * log10($cintura - $pescoco) - 70.041 * log10($altura) + 36.76;
+            $gordura = $gorduram;
+        } else {
+            $gorduraf = 163.205 * log10($cintura + $quadril - $pescoco) - 97.684 * log10($altura) - 78.387;
+            $gordura = $gorduraf /= 10 * -1;
+            echo $gordura . $gorduraf;
+        }
+
+
+        // Cálculo do Metabolismo Basal
+        if ($sexo == 'm') {
+            $basal = 88.362 + (13.397 * $peso) + (4.799 * $altura) - (5.677 * $idade);
+        } else {
+            $basal = 447.593 + (9.247 * $peso) + (3.098 * $altura) - (4.330 * $idade);
+        }
+
+
+        $post_data = array(
+            'braco' => $_POST['text_braco'],
+            'antebraco' => $_POST['text_antebraco'],
+            'panturrilha' => $_POST['text_panturrilha'],
+            'perna' => $_POST['text_perna'],
+            'cinturaEscapular' => $_POST['text_cinturaEscapular'],
+            'meta' => $_POST['text_meta']
+        );
+        $post_data['sexo'] = $sexo;
+        $post_data['idade'] = $idade;
+        $post_data['altura'] = $altura;
+        $post_data['peso'] = $peso;
+        $post_data['cintura'] = $cintura;
+        $post_data['quadril'] = $quadril;
+        $post_data['pescoco'] = $pescoco;
+        $post_data['basal'] = $basal;
+        $post_data['gordura'] = $gordura;
 
 
         $model = new UserModel();
-        $model->add_user_dataM($_POST);
+        $model->add_user_data($post_data);
 
-        $this->userdata_table();
-        return;
-    }
-
-    public function calculos_submitF()
-    {
-
-
-        // check if there is no active user in session and blocks if hasn't
-        if (!check_session()) {
-            $this->index();
-            return;
-        }
-
-        // check if there are validation errors to return to the form
-        if (!empty($validation_errors)) {
-            $_SESSION['validation_errors'] = $validation_errors;
-            $this->calculos();
-            return;
-        }
-
-
-        $model = new UserModel();
-        $model->add_user_dataF($_POST);
-
-        $this->userdata_table();
+        $this->user_profile();
         return;
     }
 
 
-    // =============== USER_DATA CONTROLLERS ===========================
+    // =============== USER_DATA CONTROLLERS ==============================
+
     public function userdata_table()
     {
         // check if there is no active user in session and blocks if hasn't
@@ -414,11 +549,147 @@ class Main extends BaseController
         $id = $_SESSION['user']['id'];
 
         $model = new UserModel();
-        $model->get_user_data($id);
+        $data['user_data'] = $model->get_user_data($id);
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('userdata_table', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function medidas_delete($item_id)
+    {
+
+        // Verifique se o ID foi passado
+        if (!isset($_GET['id'])) {
+            $_SESSION['erro'] = "Erro no Id passado!";
+            $this->index();
+            return;
+        }
+
+        $item_id = $_GET['id'];
 
 
-        //erro aqui
-        $data['user_data'] = $_SESSION['user_data'];
+        $model = new UserModel();
+        $model->soft_delete($item_id);
+
+        $this->userdata_table();
+        return;
+    }
+
+
+    public function medidas_edit($item_id)
+    {
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data = [];
+
+        if (!empty($_SESSION['validation_errors'])) {
+            $data['validation_errors'] = $_SESSION['validation_errors'];
+            unset($_SESSION['validation_errors']);
+        }
+
+        // check if there was an invalid login
+        if (!empty($_SESSION['server_error'])) {
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $data['user_data'] = $model->get_user_data($id);
+
+        // Verifique se o ID foi passado
+        if (!isset($_GET['id'])) {
+            $_SESSION['erro'] = "Erro no Id passado!";
+            $this->index();
+            return;
+        }
+
+        $item_id = $_GET['id'];
+
+        $model = new UserModel();
+        $data['user_data_id'] = $model->get_1_data_user($item_id);
+
+
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('medidas_edit', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function medidas_edit_submit($id)
+    {
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->index();
+            return;
+        }
+
+
+        // Verifica se foi feita uma requisição POST
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->index();
+            return;
+        }
+
+        // Inicializa o array de erros de validação
+        $validation_errors = [];
+
+        //valida todos os campos tendo que preenchelos.
+        $campos = ['altura', 'peso', 'cintura', 'quadril', 'pescoco', 'braco', 'antebraco', 'panturrilha', 'perna', 'cinturaEscapular'];
+        foreach ($campos as $campo) {
+            // Verifica se o campo está vazio
+            if (empty($_POST['text_' . $campo])) {
+                $validation_errors[] = ucfirst($campo) . ' é obrigatório.';
+            }
+        }
+
+        // Validação do campo de meta
+        if (empty($_POST['text_meta'])) {
+            $validation_errors[] = 'A meta é obrigatória.';
+        }
+
+
+        // Se houver erros de validação, redireciona de volta ao formulário com os erros
+        if (!empty($validation_errors)) {
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->medidas_edit($id);
+            return;
+        }
+
+
+        $model = new UserModel();
+        $model->data_user_edit($_POST,$id);
+
+        $this->userdata_table();
+        return;
+    }
+
+
+    public function user_data()
+    {
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $data['user_data'] = $model->get_user_data($id);
 
         $this->view('shared/html_header');
         $this->view('navbar', $data);
@@ -427,11 +698,38 @@ class Main extends BaseController
     }
 
 
+
+    // =============== ESTATISTICAS CONTROLLER  ===========================
+
+    public function estatisticas()
+    {
+
+        $data['user'] = $_SESSION['user'];
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data['user'] = $_SESSION['user'];
+        $id = $_SESSION['user']['id'];
+
+        $model = new UserModel();
+        $data['user_data'] = $model->get_user_data($id);
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('estatisticas', $data);
+        $this->view('shared/html_footer');
+    }
+
+
+
     // =============== PLANNER CONTROLLERS ===========================
+
     public function planner()
     {
 
-        $data = $_SESSION['user'];
 
         // check if there is no active user in session and blocks if hasn't
         if (!check_session()) {
@@ -443,11 +741,7 @@ class Main extends BaseController
         $id = $_SESSION['user']['id'];
 
         $model = new UserModel();
-        $model->get_user_data($id);
-
-
-        //erro aqui
-        $data['user_data'] = $_SESSION['user_data'];
+        $data['user_data'] = $model->get_user_data($id);
 
         $this->view('shared/html_header');
         $this->view('navbar', $data);
@@ -457,8 +751,6 @@ class Main extends BaseController
 
     public function planner_form()
     {
-
-        $data = $_SESSION['user'];
 
         // check if there is no active user in session and blocks if hasn't
         if (!check_session()) {
@@ -485,13 +777,11 @@ class Main extends BaseController
     public function planner_submit()
     {
 
-        $data = $_SESSION['user'];
+        $data['user'] = $_SESSION['user'];
         // check if there is no active user in session and blocks if hasn't
         if (!check_session()) {
             $this->login();
             return;
         }
-
-
     }
 }
