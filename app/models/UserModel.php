@@ -98,6 +98,25 @@ class UserModel extends Database
 
         return $user_data;
     }
+
+    public function get_user_data_delete($UserId)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM userdata WHERE UserId = :UserId and DeletedAt is not null");
+        $stmt->bindParam(':UserId', $UserId);
+
+        try {
+            $stmt->execute();
+        } catch (Throwable $e) {
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+
+        $user_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $user_data;
+    }
     
     public function get_last_user_data($UserId)
     {
@@ -154,6 +173,8 @@ class UserModel extends Database
 
     }
 
+    //UPDATES
+    
     public function data_user_edit($post_data, $id){
         
 
@@ -203,5 +224,7 @@ class UserModel extends Database
 
 
     }
+
+    
 
 }

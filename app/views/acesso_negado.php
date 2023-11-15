@@ -12,6 +12,21 @@
         <pre>
             <?php
                 print_r($data);
+                echo "<br>";
+                echo "<br>";
+                echo "<br>";
+
+                function ofuscar($string) {
+                    // Substitui cada caractere por um valor específico (pode ser mais complexo)
+                    return str_replace(['a', 'e', 'i', 'o', 'u'], '*', $string);
+                }
+                
+                function deofuscar($string) {
+                    // Inverte o processo de ofuscação
+                    return str_replace('*', 'o', $string);
+                }
+                
+
             ?>
         </pre>
 

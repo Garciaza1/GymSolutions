@@ -1,5 +1,5 @@
 .table-container {
-    max-height: 90vh; /* Define a altura máxima em relação à altura da viewport */
+    max-height: fit-content; /* Define a altura máxima em relação à altura da viewport */
     overflow-y: auto; /* Adiciona uma barra de rolagem vertical, se necessário */
 }
 

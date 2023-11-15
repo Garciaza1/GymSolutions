@@ -9,10 +9,18 @@ use GymSolution\Models\UserModel;
 class Main extends BaseController
 {
 
-    public function home()
+    public function home() //PUBLICO
     {
 
-        $data = [];
+        // check if there is no active user in session and blocks if hasn't
+        if (check_session()) {
+            $data['user'] = $_SESSION['user'];
+        } else {
+            $data = [];
+        }
+
+
+
         $this->view('shared/html_header');
         $this->view('navbar', $data);
         $this->view('home_page');
@@ -259,6 +267,7 @@ class Main extends BaseController
             return;
         }
 
+
         // check if the client already exists with the same name
         $model = new ModelsMain();
         $results = $model->check_if_user_exists($_POST);
@@ -270,14 +279,22 @@ class Main extends BaseController
             $this->cadastro();
             return;
         } else {
-            // add new client to the database
-            $model->cadastrar_usuario($_POST);
 
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
 
+                // add new client to the database
+                $model->cadastrar_usuario($_POST);
 
-            // return to the main clients page
-            $this->login();
-            return;
+                // return to the main clients page
+                $this->login();
+                return;
+            } else {
+
+                // a person with the same name exists for this agent. Returns a server error
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->cadastro();
+                return;
+            }
         }
     }
 
@@ -313,6 +330,19 @@ class Main extends BaseController
             return;
         }
 
+        // check if there are errors (after login_submit)
+        $data = [];
+        if (!empty($_SESSION['validation_errors'])) {
+            $data['validation_errors'] = $_SESSION['validation_errors'];
+            unset($_SESSION['validation_errors']);
+        }
+
+        // check if there was an invalid login
+        if (!empty($_SESSION['server_error'])) {
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
         $data['user'] = $_SESSION['user'];
         $id = $_SESSION['user']['id'];
 
@@ -323,6 +353,201 @@ class Main extends BaseController
         $this->view('navbar', $data);
         $this->view('perfil', $data);
         $this->view('shared/html_footer');
+    }
+
+    public function perfil_submit()
+    {
+        // check if there is already an active session
+        if (!check_session()) {
+            $this->index();
+            return;
+        }
+
+        // check if there was a post request
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->perfil();
+            return;
+        }
+
+        //UPDATE DO NOME =============
+        if (isset($_POST['update_name'])) {
+
+            if (empty($_POST['text_mudar_nome'])) {
+                $validation_errors[] = "o nome precisa ser preenchido";
+            }
+            $nome = $_POST['text_mudar_nome'];
+
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+
+                $model = new ModelsMain();
+                $model->change_name($nome);
+
+                $this->perfil();
+                return;
+            } else {
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->perfil();
+                return;
+            }
+        }
+
+        //UPDATE DO SENHA =============
+        // trocar de método para pagina so de senha
+        if (isset($_POST['update_senha'])) {
+
+            // get form data
+            $senha_atual = $_POST['text_senha_atual'];
+            if (!password_verify($_SESSION['user']['senha'], $senha_atual)) {
+                $validation_errors[] = 'A password antiga não confere.';
+            }
+
+
+            $password = $_POST['text_senha_nova'];
+            // check if password is valid
+            if (strlen($password) < 6 || strlen($password) > 12) {
+                $validation_errors[] = 'A password deve ter entre 6 e 12 caracteres.';
+            }
+
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+
+                $model = new ModelsMain();
+                $model->change_name($password);
+
+                $this->perfil();
+                return;
+            } else {
+
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->perfil();
+                return;
+            }
+
+        }
+
+        // VALIDAÇÃO DO EMAIL =========
+        if (isset($_POST['update_email'])) {
+
+
+            // get form data
+            $email = $_POST['text_email'];
+            // check if username is valid email and between 5 and 50 chars
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $validation_errors[] = 'O email tem que ser válido.';
+            }
+
+            // check if username is between 5 and 50 chars
+            if (strlen($email) < 5 || strlen($email) > 50) {
+                $validation_errors[] = 'O email deve ter entre 5 e 50 caracteres.';
+            }
+
+            // check if there are validation errors
+            if (!empty($validation_errors)) {
+                $_SESSION['validation_errors'] = $validation_errors;
+                $this->perfil();
+                return;
+            }
+
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+
+                $model = new ModelsMain();
+                $model->change_name($email);
+
+                $this->perfil();
+                return;
+            } else {
+                
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->perfil();
+                return;
+            }
+        }
+
+        //UPDATE DO DATA =============
+        if (isset($_POST['update_data'])) {
+
+            if (empty($_POST['mudar_data'])) {
+                $_SESSION['validation_errors'] = "a data precisa ser preenchida";
+            }
+
+            // check if birthdate is valid and is older than today
+            $birthdate = \DateTime::createFromFormat('d-m-Y', $_POST['text_birthdate']);
+            if (!$birthdate) {
+                $validation_errors[] = "A data de nascimento não está no formato correto.";
+            } else {
+                $today = new \DateTime();
+                if ($birthdate >= $today) {
+                    $validation_errors[] = "A data de nascimento tem que ser anterior ao dia atual.";
+                }
+            }
+
+            $nascimento = $_POST['mudar_data'];
+
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+
+                $model = new ModelsMain();
+                $model->change_name($nascimento);
+
+                $this->perfil();
+                return;
+            } else {
+                
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->perfil();
+                return;
+            }
+        }
+
+        //UPDATE DO TELEFONE =============
+        if (isset($_POST['update_telefone'])) {
+
+            if (empty($_POST['text_mudar_telefone'])) {
+                $_SESSION['validation_errors'] = "o telefone precisa ser preenchido";
+            }
+            $telefone = $_POST['text_mudar_telefone'];
+
+            if (preg_match('/^(\d{2})(\d{5})(\d{4})$/', $telefone, $matches)) {
+                $telefone_formatado = "({$matches[1]}) {$matches[2]}-{$matches[3]}";
+                echo $telefone_formatado;
+            }
+
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+
+                $model = new ModelsMain();
+                $model->change_name($telefone_formatado);
+
+                $this->perfil();
+                return;
+            } else {
+                
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->perfil();
+                return;
+            }
+        }
+
+        //UPDATE DO SEXO =============
+        if (isset($_POST['update_genero'])) {
+
+            if (empty($_POST['radio_gender'])) {
+                $_SESSION['validation_errors'] = "o genero precisa ser preenchido";
+            }
+
+            $sexo = $_POST['radio_gender'];
+
+            if (isset($_POST['csrf_token']) && $_POST['csrf_token'] === $_SESSION['csrf_token']) {
+
+                $model = new ModelsMain();
+                $model->change_name($sexo);
+
+                $this->perfil();
+                return;
+            } else {
+                
+                $_SESSION['server_error'] = "O token não foi validado prencha novamente";
+                $this->perfil();
+                return;
+            }
+        }
     }
 
 
@@ -346,21 +571,16 @@ class Main extends BaseController
         $this->view('shared/html_footer');
     }
 
-
-
-
     // =============== CALCULOS CONTROLLER ===========================
 
-    public function calculos() //pagina sobre a saúde e metabolismo
+    public function calculos() //pagina sobre a saúde e metabolismo PUBLICO
     {
 
-        // check if there is no active user in session and blocks if hasn't
-        if (!check_session()) {
-            $this->login();
-            return;
+        if ($_SESSION['user']) {
+            $data['user'] = $_SESSION['user'];
+        } else {
+            $data = [];
         }
-
-        $data = [];
 
         if (!empty($_SESSION['validation_errors'])) {
             $data['validation_errors'] = $_SESSION['validation_errors'];
@@ -381,16 +601,14 @@ class Main extends BaseController
         $this->view('shared/html_footer');
     }
 
-    public function calculos_forms() // identifica por sexo em js
+    public function calculos_forms() // identifica por sexo em js PUBLICO
     {
 
-        // check if there is no active user in session and blocks if hasn't
-        if (!check_session()) {
-            $this->login();
-            return;
+        if ($_SESSION['user']) {
+            $data['user'] = $_SESSION['user'];
+        } else {
+            $data = [];
         }
-
-        $data['user'] = $_SESSION['user'];
 
         $this->view('shared/html_header');
         $this->view('navbar', $data);
@@ -495,8 +713,7 @@ class Main extends BaseController
             $gordura = $gorduram;
         } else {
             $gorduraf = 163.205 * log10($cintura + $quadril - $pescoco) - 97.684 * log10($altura) - 78.387;
-            $gordura = $gorduraf /= 10 * -1;
-            echo $gordura . $gorduraf;
+            $gordura = $gorduraf;
         }
 
 
@@ -670,7 +887,7 @@ class Main extends BaseController
 
 
         $model = new UserModel();
-        $model->data_user_edit($_POST,$id);
+        $model->data_user_edit($_POST, $id);
 
         $this->userdata_table();
         return;
@@ -762,11 +979,7 @@ class Main extends BaseController
         $id = $_SESSION['user']['id'];
 
         $model = new UserModel();
-        $model->get_user_data($id);
-
-
-        //erro aqui
-        $data['user_data'] = $_SESSION['user_data'];
+        $data['user_data'] = $model->get_user_data($id);
 
         $this->view('shared/html_header');
         $this->view('navbar', $data);

@@ -1,3 +1,10 @@
+<?php
+
+    $csrf_token = bin2hex(random_bytes(32));
+    $_SESSION['csrf_token'] = $csrf_token;
+
+?>
+
 <div class="container-fluid mt-5 mb-5">
     <div class="row justify-content-center pb-5">
         <div class="col-lg-8 col-md-10">
@@ -14,7 +21,8 @@
                     <h2 class="text-center p-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"><strong>CADASTRO</strong></h2>
 
                         <form action="?ct=main&mt=cadastro_submit" method="post" >
-
+                        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>"><!-- token -->
+                        
                             <div class="mb-3">
                                 <label for="text_name" class="form-label">Nome</label>
                                 <input type="text" name="text_name" id="text_name" value="" class="form-control" required>

@@ -44,8 +44,6 @@ class Main extends Database
             print_r($e);
         }
     }
-   // die('morreu aqui');
-
 
     public function verificar_login($email, $senha) {
         $stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE email = :email");
@@ -102,4 +100,125 @@ class Main extends Database
             ];
         }  
     }
+
+
+    // UPDATES
+
+    public function change_name($post_data) {
+        $nome = $post_data['text_mudar_nome'];
+        $id = $_SESSION['user']['id'];
+    
+        $stmt = $this->conn->prepare("UPDATE usuarios SET  nome = :nome UpdatedAt = NOW() WHERE id = :id");
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':id', $id);
+        ;
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+    
+    public function change_email($post_data) {
+        $email = $post_data['text_email_novo'];
+        $id = $_SESSION['user']['id'];
+        
+        $stmt = $this->conn->prepare("UPDATE usuarios SET  email = :email UpdatedAt = NOW() WHERE id = :id");
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':id', $id);
+        ;
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+
+    public function change_senha($post_data) {
+        $senha = $post_data['text_senha_nova'];
+        $id = $_SESSION['user']['id'];
+    
+        // $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+        
+        $stmt = $this->conn->prepare("UPDATE usuarios SET  senha = :senha UpdatedAt = NOW() WHERE id = :id");
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':id', $id);
+        ;
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+    
+
+    public function change_data($post_data) {
+        $nascimento = $post_data['mudar_data'];
+        $id = $_SESSION['user']['id'];
+        
+        $stmt = $this->conn->prepare("UPDATE usuarios SET  nascimento = :nascimento UpdatedAt = NOW() WHERE id = :id");
+        $stmt->bindParam(':nascimento', $nascimento);
+        $stmt->bindParam(':id', $id);
+        ;
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+
+    public function change_tel($post_data) {
+        $telefone = $post_data['text_mudar_telefone'];
+        $id = $_SESSION['user']['id'];
+        
+        $stmt = $this->conn->prepare("UPDATE usuarios SET  telefone = :telefone UpdatedAt = NOW() WHERE id = :id");
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':id', $id);
+        ;
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+    
+    public function change_sex($post_data) {
+        $sexo = $post_data['update_genero'];
+        $id = $_SESSION['user']['id'];
+        
+        $stmt = $this->conn->prepare("UPDATE usuarios SET  sexo = :sexo UpdatedAt = NOW() WHERE id = :id");
+        $stmt->bindParam(':sexo', $sexo);
+        $stmt->bindParam(':id', $id);
+        ;
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+
 }

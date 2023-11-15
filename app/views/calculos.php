@@ -1,6 +1,6 @@
 <?php
 
-if ($_SESSION) {
+if ($_SESSION['user']) {
 
     $_SESSION['user'] = $data['user'];
 

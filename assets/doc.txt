@@ -1,21 +1,46 @@
+planners:
+    VAO FUNCINAR ASSIM: 
+    ele vai criar um planner novo numa pagina de criação de planners(tabela) onde teá o nome do planner e os dias e o objetivo  
+    embaixo dicas de como fazer divisões de treino
+
+    depois de criado ele vai pra pagina de montar os dias do planner 
+    então vai ter a tabela de terça do planner 1 por exemplo e assim por diante para cada dia um planner 
+    varios dias num planner só 
+
+    ter a opção de mais de um planner e varios dias 
+    quando criada a tabela planner, criar as outras com os dias do planner 
+    user um model so pro planner.
+
 pendencias:
+
+    VALIDAÇÃO DE FORMULARIO DE INSERT / UPDATE DO TOKEN CSRF
+    FALTA CADASTRO(com o codigo 'TOKEN'), NOVAS MEDIDAS E PERFIL(testar)
+
+    fazer pagina de troca de senha
+
+    DEIXAR AS QUERYS TODAS ENCRIPTADAS NO INSERT E DESCRIPTAR NO SELECT
 
     COLOCAR A OPÇÃO DE JA SABER O BASAL OU O BF EM RADIO BUTTONS
 
-    verificar pq o js não esta funcionando da forma correta(voltou a funcionar) acertar os calculos
-    masculino ou feminino APENAS EM JS.
+    acertar os calculos masculino ou feminino APENAS EM JS.
 
     arrumar os calculos e colocar IMC na tabela
+    pagina sobre IMC body fat e basal explicando sobre cada sexo.
 
     a apresentação de dados do usuario tem q ser melhorada a tabela fica em segunda pagina
+
     e primeira pgn nos mostramos a valor do ultimo id UserModel desta pessoa
 
     tirar o informações sobre o corpo e deixar no acesso livre no navbar do home (estilizar as duas paginas)
 
-    verificar os erros do outro login de usuario femiinino e conferir os calculos. (erros: controllers)
+    verificar os erros de usuario feminino e conferir os calculos. (erros: controllers)
 
 
 final do projeto:
+
+    soft delete no perfil do susuario 
+    quando for fazer login buscar por deletedat = null
+    pagina de recuperar perfil com as informações antigas.
     
     deixar o planner ok
     estilizar com css as paginas usando vermelho possivelmente amarelo ou azul ou verde 

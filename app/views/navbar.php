@@ -2,7 +2,7 @@
 
 $logado = false;
 
-if ($_SESSION) {
+if (check_session()) {
 
     $logado = true;
 
@@ -22,12 +22,21 @@ if ($_SESSION) {
 <div class="container-fluid bng-navbar">
     <div class="row">
 
-        <div class="col-4 d-flex align-content-center p-3">
-            <a href="?ct=main&mt=index"><img src="<?= IMAGE_PATH . 'KEVIN-1_vetor2.png' ?>" alt="logo GymSolution" height="46" class="me-3"></a>
-            <a href="?ct=main&mt=index" style="text-decoration: none; color:black;">
-                <h3><?= APP_NAME ?></h3>
-            </a>
-        </div>
+        <?php if ($logado) : ?>
+            <div class="col-4 d-flex align-content-center p-3">
+                <a href="?ct=main&mt=index"><img src="<?= IMAGE_PATH . 'KEVIN-1_vetor2.png' ?>" alt="logo GymSolution" height="46" class="me-3"></a>
+                <a href="?ct=main&mt=index" style="text-decoration: none; color:black;">
+                    <h3><?= APP_NAME ?></h3>
+                </a>
+            </div>
+        <?php else : ?>
+            <div class="col-4 d-flex align-content-center p-3">
+                <a href="?ct=main&mt=home"><img src="<?= IMAGE_PATH . 'KEVIN-1_vetor2.png' ?>" alt="logo GymSolution" height="46" class="me-3"></a>
+                <a href="?ct=main&mt=home" style="text-decoration: none; color:black;">
+                    <h3><?= APP_NAME ?></h3>
+                </a>
+            </div>
+        <?php endif; ?>
 
         <div class="text-center col-4 pt-4">
             <?php if ($logado) : ?>
@@ -63,15 +72,18 @@ if ($_SESSION) {
             <?php else : ?>
 
                 <div class="text-end col-4 mt-2 ">
-                    <button class="btn btn-dark m-2" type="button">
-                        <i class="fa-solid fa-medal me-2"></i></i>
-                        <a href="?ct=main&mt=login" style="text-decoration: none; color: white;">Entrar</a>
-                    </button>
-
-                    <button class="btn btn-dark m-2" type="button">
-                        <i class="fa-solid fa-person-skiing me-2"></i></i>
-                        <a href="?ct=main&mt=cadastro" style="text-decoration: none; color: white;">Cadastrar</a>
-                    </button>
+                    <a href="?ct=main&mt=login" style="text-decoration: none; color: white;">
+                        <button class="btn btn-dark m-2" type="button">
+                            <i class="fa-solid fa-medal me-2"></i>
+                            Entrar
+                        </button>
+                    </a>
+                    <a href="?ct=main&mt=cadastro" style="text-decoration: none; color: white;">
+                        <button class="btn btn-dark m-2" type="button">
+                            <i class="fa-solid fa-person-skiing me-2"></i>
+                            Cadastrar
+                        </button>
+                    </a>
                 </div>
             <?php endif; ?>
             </div>

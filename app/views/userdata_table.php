@@ -10,7 +10,7 @@
         <button class="button btn-secondary" type="button"><a href="?ct=main&mt=index ">voltar</a></button>
     <?php else: ?>
         <div class="table-container border border-3 border-dark rounded-2 p-2" style="height: 90vh;">
-            <table class="table table-bordered table-dark table-striped mx-auto my-3" id="myTable" style="width: 90%;">
+            <table class="table table-bordered table-dark table-striped mx-auto my-3" id="myTable" style="width: fit-content;">
                 <thead style="color: white;">
                 <tr>
                     <th>Excluir</th>
