@@ -17,7 +17,7 @@ class UserModel extends Database
     }
 
 
-    public function add_user_data($post_data) //precisa ver como colocar o basal e gordura manualmente com form novo ou não
+    public function add_user_data($post_data)
     {
 
         $UserId = $_SESSION['user']['id'];
@@ -35,24 +35,53 @@ class UserModel extends Database
         $gordura = $post_data['gordura'];
         $basal = $post_data['basal'];
 
-        /*
-        text_altura
-        text_peso
-        text_cintura
-        text_quadril
-        text_pescoco
-        text_braco
-        text_antebraco
-        text_panturrilha
-        text_perna
-        text_cinturaEscapular
-        text_meta
-        */
-        /*
-        $basal = ;
-        $gordura = ; 
-        */
 
+        $stmt = $this->conn->prepare("INSERT INTO userdata (UserId, altura, pescoco, cintura, quadril, meta, peso, braco, antebraco, cinturaEscapular, perna, panturrilha, gordura, basal, CreatedAt) VALUES (:UserId, :altura, :pescoco, :cintura, :quadril, :meta, :peso, :braco, :antebraco, :cinturaEscapular, :perna, :panturrilha, :gordura, :basal, NOW())");
+
+        $stmt->bindParam(':UserId', $UserId, PDO::PARAM_INT);
+        $stmt->bindParam(':altura', $altura, PDO::PARAM_INT);
+        $stmt->bindParam(':pescoco', $pescoco, PDO::PARAM_INT);
+        $stmt->bindParam(':cintura', $cintura, PDO::PARAM_INT);
+        $stmt->bindParam(':quadril', $quadril, PDO::PARAM_INT);
+        $stmt->bindParam(':meta', $meta);// não pode ser int
+        $stmt->bindParam(':peso', $peso, PDO::PARAM_INT);
+        $stmt->bindParam(':basal', $basal, PDO::PARAM_INT);
+        $stmt->bindParam(':braco', $braco, PDO::PARAM_INT);
+        $stmt->bindParam(':antebraco', $antebraco, PDO::PARAM_INT);
+        $stmt->bindParam(':cinturaEscapular', $cinturaEscapular, PDO::PARAM_INT);
+        $stmt->bindParam(':perna', $perna, PDO::PARAM_INT);
+        $stmt->bindParam(':panturrilha', $panturrilha, PDO::PARAM_INT);
+        $stmt->bindParam(':gordura', $gordura, PDO::PARAM_INT);
+
+        try {
+            $stmt->execute();
+        } catch (Throwable $e) {
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+    }
+
+    public function add_user_data_2($post_data)
+    {
+
+        $UserId = $_SESSION['user']['id'];
+        $altura = $post_data['text_altura'];
+        $peso = $post_data['text_peso'];
+        $cintura = $post_data['text_cintura'];
+        $quadril = $post_data['text_quadril'];
+        $pescoco = $post_data['text_pescoco'];
+        $meta = $post_data['text_meta'];
+        $braco = $post_data['text_braco'];
+        $antebraco = $post_data['text_antebraco'];
+        $cinturaEscapular = $post_data['text_cinturaEscapular'];
+        $perna = $post_data['text_perna'];
+        $panturrilha = $post_data['text_panturrilha'];
+        $gordura = $post_data['text_gordura'];
+        $basal = $post_data['text_basal'];
+
+        
         $stmt = $this->conn->prepare("INSERT INTO userdata (UserId, altura, pescoco, cintura, quadril, meta, peso, braco, antebraco, cinturaEscapular, perna, panturrilha, gordura, basal, CreatedAt) VALUES (:UserId, :altura, :pescoco, :cintura, :quadril, :meta, :peso, :braco, :antebraco, :cinturaEscapular, :perna, :panturrilha, :gordura, :basal, NOW())");
 
         $stmt->bindParam(':UserId', $UserId, PDO::PARAM_INT);

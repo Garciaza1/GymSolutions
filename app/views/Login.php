@@ -30,7 +30,7 @@
                                 <a href="?ct=main&mt=cadastro">Não Tenho Cadastro</a>
                                 <hr>
                                 <div class="pt-2">
-                                    <a href="?ct=main&mt=#">Esqueci-me da senha!</a>
+                                    <a href="?ct=reset&mt=pass_recover_form">Esqueci-me da senha!</a>
                                 </div>
                             </div>
 

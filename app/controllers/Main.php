@@ -645,7 +645,7 @@ class Main extends BaseController
         $this->view('novas_medidas', $data);
         $this->view('shared/html_footer');
     }
-
+    
     public function medidas_submit() //recebe de novas_medidas
     {
 
@@ -751,6 +751,88 @@ class Main extends BaseController
         return;
     }
 
+// com basal e bf
+    public function novas_medidas_2() //aponta para o calculo_submit
+    {
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->login();
+            return;
+        }
+
+        $data = [];
+
+        if (!empty($_SESSION['validation_errors'])) {
+            $data['validation_errors'] = $_SESSION['validation_errors'];
+            unset($_SESSION['validation_errors']);
+        }
+
+        // check if there was an invalid login
+        if (!empty($_SESSION['server_error'])) {
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+        $data['user'] = $_SESSION['user'];
+
+        $this->view('shared/html_header');
+        $this->view('navbar', $data);
+        $this->view('novas_medidas_2', $data);
+        $this->view('shared/html_footer');
+    }
+
+    public function medidas_submit_2() //recebe de novas_medidas
+    {
+
+
+        // check if there is no active user in session and blocks if hasn't
+        if (!check_session()) {
+            $this->index();
+            return;
+        }
+
+
+        // Verifica se foi feita uma requisição POST
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            $this->index();
+            return;
+        }
+
+        // Inicializa o array de erros de validação
+        $validation_errors = [];
+
+        //valida todos os campos tendo que preenchelos.
+        $campos = ['altura', 'peso', 'cintura', 'quadril', 'pescoco', 'braco', 'antebraco', 'panturrilha', 'perna', 'cinturaEscapular', "basal", "gordura"];
+        foreach ($campos as $campo) {
+            // Verifica se o campo está vazio
+            if (empty($_POST['text_' . $campo])) {
+                $validation_errors[] = ucfirst($campo) . ' é obrigatório.';
+            }
+        }
+
+        // Validação do campo de meta
+        if (empty($_POST['text_meta'])) {
+            $validation_errors[] = 'A meta é obrigatória.';
+        }
+
+
+        // Se houver erros de validação, redireciona de volta ao formulário com os erros
+        if (!empty($validation_errors)) {
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->novas_medidas_2(); // ou o nome da função que exibe o formulário
+            return;
+        }
+
+
+
+        $model = new UserModel();
+        $model->add_user_data_2($_POST);
+
+        $this->user_profile();
+        return;
+    }
+    
 
     // =============== USER_DATA CONTROLLERS ==============================
 

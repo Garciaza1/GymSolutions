@@ -13,6 +13,7 @@ planners:
 
 pendencias:
 
+    SENDMAIL FAZER FUNCIONAR COM UDEMY UMA CLASSE NOVA
     VALIDAÇÃO DE FORMULARIO DE INSERT / UPDATE DO TOKEN CSRF
     FALTA CADASTRO(com o codigo 'TOKEN'), NOVAS MEDIDAS E PERFIL(testar)
 
@@ -20,20 +21,18 @@ pendencias:
 
     DEIXAR AS QUERYS TODAS ENCRIPTADAS NO INSERT E DESCRIPTAR NO SELECT
 
-    COLOCAR A OPÇÃO DE JA SABER O BASAL OU O BF EM RADIO BUTTONS
+    verificar os erros de usuario feminino e conferir os calculos. (erros: controllers)
 
     acertar os calculos masculino ou feminino APENAS EM JS.
 
-    arrumar os calculos e colocar IMC na tabela
-    pagina sobre IMC body fat e basal explicando sobre cada sexo.
+    arrumar os calculos e pagina sobre IMC body fat e basal explicando sobre cada sexo.
 
-    a apresentação de dados do usuario tem q ser melhorada a tabela fica em segunda pagina
+    a apresentação de dados do usuario tem q ser melhorada
 
     e primeira pgn nos mostramos a valor do ultimo id UserModel desta pessoa
 
     tirar o informações sobre o corpo e deixar no acesso livre no navbar do home (estilizar as duas paginas)
 
-    verificar os erros de usuario feminino e conferir os calculos. (erros: controllers)
 
 
 final do projeto:

@@ -1,7 +1,7 @@
 <?php
 namespace GymSolution\Models;
-
 use GymSolution\System\Database;
+
 use PDO;
 use Throwable;
 
@@ -101,6 +101,26 @@ class Main extends Database
         }  
     }
 
+    public function recover_password($email, $token){
+
+        
+
+        $stmt = $this->conn->prepare("UPDATE usuarios SET token_rec_pass = :token WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':token', $token);
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
+
+    }
+
+
 
     // UPDATES
 
@@ -165,6 +185,7 @@ class Main extends Database
     
 
     public function change_data($post_data) {
+        
         $nascimento = $post_data['mudar_data'];
         $id = $_SESSION['user']['id'];
         
