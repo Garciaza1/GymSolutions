@@ -6,6 +6,7 @@ use GymSolution\Controllers\BaseController;
 use GymSolution\Controllers\Main;
 use GymSolution\Models\UserModel;
 use GymSolution\Models\Main as ModelsMain;
+use GymSolution\System\SendEmail;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -63,120 +64,45 @@ class reset extends BaseController
 
         $email = $_POST['recupera_senha'];
 
-        // check if username is valid email and between 5 and 50 chars
+        // check if email is valid 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $validation_errors[] = 'O email tem que ser válido.';
         }
 
-        $token = bin2hex(random_bytes(32));
-        $_SESSION['recover_token'] = $token;
-
-        $model = new ModelsMain();
-        $model->recover_password($email, $token);
-
-        //tenta criar email COLOCAR NUMA CLASSE SEPARADA
-        $mail = new PHPMailer(true);
-        try {
-            //Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-            $mail->isSMTP();                                            //Send using SMTP
-            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'gymsolutionoperation@gmail.com';                     //SMTP username
-            $mail->Password   = 'Gr28011922';                               //SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-            $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-            //Recipients
-            $mail->setFrom('gymsolutionoperation@gmail.com', 'Mailer');
-            $mail->addAddress('gustavogarcia56336@gmail.com', 'Joe User');     //Add a recipient
-            $mail->addAddress($email, 'usuario:');     //Add a recipient
-            $mail->addReplyTo('gymsolutionoperation@gmail.com', 'Information');
-
-            // //Attachments
-            // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-
-            //Content
-            $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = 'Gym Solution password recover';
-
-            $body = '<!DOCTYPE html>
-
-                <html lang="pt-br">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Recuperação de Senha</title>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            background-color: #f4f4f4;
-                            margin: 0;
-                            padding: 0;
-                        }
-                
-                        .container {
-                            max-width: 600px;
-                            margin: 20px auto;
-                            background-color: #fff;
-                            padding: 20px;
-                            border-radius: 5px;
-                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        }
-                
-                        h1 {
-                            color: #333;
-                        }
-                
-                        p {
-                            color: #555;
-                        }
-                
-                        .token {
-                            background-color: #eee;
-                            padding: 10px;
-                            border-radius: 5px;
-                            font-size: 18px;
-                            margin-top: 20px;
-                        }
-                    </style>
-                </head>
-                <body>
-                
-                <div class="container">
-                    <h1>Recuperação de Senha</h1>
-                    <p>Olá,</p>
-                    <p>Você solicitou a recuperação de senha. Use o seguinte token para redefinir sua senha:</p>
-                    <div class="token">
-                        <!-- Inserir o token gerado dinamicamente aqui -->
-                        <strong>'. $token .'</strong>
-                    </div>
-                    <p>Este token é válido por um curto período de tempo. Não compartilhe com mais ninguém.</p>
-                    <p>Se você não solicitou essa recuperação de senha, ignore este e-mail.</p>
-                    <p>Atenciosamente,<br>Equipe de Suporte</p>
-                </div>
-                
-                </body>
-                </html>';
-
-
-            $mail->Body = $body;
-            $mail->AltBody = 'AQUI ESTÁ O TOKEN DE RECUPERAÇÃO DE SENHA: '. $token;
-
-            $mail->send();
-
-            if (empty($_POST['recupera_senha'])) {
-                $server_error[] = "Message has been sent!";
-            }
-        } catch (Exception $e) {
-            // Validação do campo de email
-            if (empty($_POST['recupera_senha'])) {
-                $server_error[] = "Message could not be sent. Mailer Error:{$mail->ErrorInfo}";
-            }
+        // Se houver erros de validação, redireciona de volta ao formulário com os erros
+        if (!empty($validation_errors)) {
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->pass_recover_form();
+            return;
         }
 
-        $this->pass_recover_email($token, $email);
+
+        $model = new ModelsMain();
+
+        $token = bin2hex(random_bytes(3));
+
+        $model->recover_password($email, $token);
+
+        $_SESSION['recover_token'] = $token;
+        $data['code'] = $token; // vai passar pro email
+
+        // aqui fica o model do Email com codigo e email.
+        $mail = new SendEmail();
+        $results = $mail->send_email(
+            APP_NAME . ' Código para recuperar a password',
+
+            'codigo_recuperar_password'/*nome da função privada de recuperar a senha*/,
+
+            ['to' => $email, 'code' => $data['code']]
+        );
+
+        if ($results['status'] == 'error') {
+            $_SESSION['validation_error'] = "Aconteceu um erro inesperado. Por favor tente novamente." . $results["message"];
+            $this->pass_recover_form();
+            return;
+        }
+
+        $this->pass_recover_email($token, $email); // joga pra view
         return;
     }
 
@@ -184,6 +110,8 @@ class reset extends BaseController
     {
         $data = [];
 
+
+        
         $data["token"] = $token;
         $data["email"] = $email;
 

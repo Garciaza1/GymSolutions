@@ -65,7 +65,6 @@ class Main extends Database
         }
     }
     
-
     public function get_user_data($email) {
 
         $stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE email = :email");
@@ -78,7 +77,6 @@ class Main extends Database
         
         return $data;
     }
-
 
     public function check_if_user_exists($post_data){
 
@@ -101,13 +99,14 @@ class Main extends Database
         }  
     }
 
+
     public function recover_password($email, $token){
 
         
 
         $stmt = $this->conn->prepare("UPDATE usuarios SET token_rec_pass = :token WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
 
         try{
             $stmt->execute();
@@ -183,7 +182,6 @@ class Main extends Database
         }
     }
     
-
     public function change_data($post_data) {
         
         $nascimento = $post_data['mudar_data'];

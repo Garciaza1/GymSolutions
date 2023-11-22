@@ -17,6 +17,7 @@ class UserModel extends Database
     }
 
 
+    // com calculo no controller
     public function add_user_data($post_data)
     {
 
@@ -63,6 +64,7 @@ class UserModel extends Database
         }
     }
 
+    // sem calculo no controller
     public function add_user_data_2($post_data)
     {
 
@@ -109,6 +111,7 @@ class UserModel extends Database
         }
     }
 
+    //pega todos os dados não deletados
     public function get_user_data($UserId)
     {
         $stmt = $this->conn->prepare("SELECT * FROM userdata WHERE UserId = :UserId and DeletedAt is null");
@@ -128,6 +131,7 @@ class UserModel extends Database
         return $user_data;
     }
 
+    // pega os dados not null deletados
     public function get_user_data_delete($UserId)
     {
         $stmt = $this->conn->prepare("SELECT * FROM userdata WHERE UserId = :UserId and DeletedAt is not null");
@@ -147,6 +151,7 @@ class UserModel extends Database
         return $user_data;
     }
     
+    // ultimo inssert userdata da pessoa
     public function get_last_user_data($UserId)
     {
         $stmt = $this->conn->prepare("SELECT * FROM userdata WHERE UserId = :UserId and DeletedAt is null ORDER BY id DESC LIMIT 1");
@@ -166,6 +171,7 @@ class UserModel extends Database
         return $user_data;
     }
 
+    // para fazer o edit 
     public function get_1_data_user($id){
 
         $stmt = $this->conn->prepare("SELECT * FROM userdata WHERE id = :id");
@@ -185,6 +191,7 @@ class UserModel extends Database
         return $user_data;
     }
 
+    //UPDATES
 
     public function soft_delete($id){
 
@@ -201,8 +208,6 @@ class UserModel extends Database
         }
 
     }
-
-    //UPDATES
     
     public function data_user_edit($post_data, $id){
         
