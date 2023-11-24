@@ -46,7 +46,8 @@ class SendEmail
 
             return [
                 'status' => 'error',
-                'message' => $mail->ErrorInfo
+                'message' => $mail->ErrorInfo,
+                'message2' => $e->getMessage()
             ];
 
         }

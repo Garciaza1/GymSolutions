@@ -110,23 +110,9 @@ if ($sexo == 'm') {
                             ↧
                         </button>
                     </h5>
-                    <form method="post" action="" class="form d-block d-none">
-                        <div class="form-group">
-
-                            <label for="senha_antiga">Senha antiga: </label>
-                            <input type="password" class="form-control" name="text_senha_atual" id="senha_antiga"></input>
-
-                            <label for="senha_nova">Senha nova: </label>
-                            <?php
-                                $csrf_token = bin2hex(random_bytes(32));
-                                $_SESSION['csrf_token'] = $csrf_token;
-                            ?>
-                            <input type="password" class="form-control" name="text_senha_nova" id="senha_nova"></input>
-                            <input hidden name="csrf_token" value="<?= $csrf_token ?>"><!-- token -->
-
-                        </div>
-                        <button type="submit" name="update_senha" class="mudar_senha btn btn-primary mt-2">Mudar senha</button>
-                    </form>
+                   
+                        <button type="" name="update_senha" class="mudar_senha btn btn-primary mt-2"><a class="text-white" href="?ct=reset&mt=pass_recover_form">Mudar senha</a></button>
+                
                 </section>
 
                 <!-- alterar aniversario -->

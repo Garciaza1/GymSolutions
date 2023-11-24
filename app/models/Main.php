@@ -24,17 +24,18 @@ class Main extends Database
         $nascimento = $post_data['text_birthdate'];
         
         
-        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
         
-        $stmt = $this->conn->prepare("INSERT INTO usuarios (nome, email, senha, telefone, idade, sexo, nascimento) VALUES (:nome, :email, :senha, :telefone, :idade, :sexo, :nascimento)");
+        $stmt = $this->conn->prepare("INSERT INTO usuarios (nome, email, senha, telefone, idade, sexo, nascimento) VALUES (:nome, :email, aes_encrypt(:senha, :aes_cript), :telefone, :idade, :sexo, :nascimento)");
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senhaHash);
+        $stmt->bindParam(':senha', $senha);
         $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':idade', $idade);
         $stmt->bindParam(':sexo', $sexo);
         $stmt->bindParam(':nascimento', $nascimento);
-
+        $stmt->bindParam(':aes_cript', aes_cript);
+        
         try{
             $stmt->execute();
         }catch(Throwable $e){
@@ -48,7 +49,16 @@ class Main extends Database
     public function verificar_login($email, $senha) {
         $stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE email = :email");
         $stmt->bindParam(':email', $email);
-        $stmt->execute();
+
+
+        try{
+            $stmt->execute();
+        }catch(Throwable $e){
+            echo '<pre>';
+            print_r($stmt);
+            echo '<br>';
+            print_r($e);
+        }
     
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -58,14 +68,14 @@ class Main extends Database
                 'status' => true
             ];
             } else {
-
-            return [
-                'status' => false
-            ];
+                
+                return [
+                    'status' => false
+                ];
+            }
         }
-    }
-    
-    public function get_user_data($email) {
+        
+        public function get_user_data($email) {
 
         $stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE email = :email");
         $stmt->bindParam(':email', $email);
@@ -100,7 +110,7 @@ class Main extends Database
     }
 
 
-    public function recover_password($email, $token){
+    public function set_token($email, $token){
 
         
 

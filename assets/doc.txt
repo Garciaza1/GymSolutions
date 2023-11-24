@@ -12,15 +12,25 @@ planners:
     user um model so pro planner.
 
 pendencias:
+    colocar as coisas em controllers diferentes planner/medidas/calculos e home
 
-    SENDMAIL FAZER FUNCIONAR 
+    SENDMAIL FAZER FUNCIONAR usar twilio sms // dus paginas uma com email um com sms
     terminar o recuperar senha.
+    (
+        fazer um selet procurando pelo email se existir manda o email senao da erro
+    )
+
+
     VALIDAÇÃO DE FORMULARIO DE INSERT / UPDATE DO TOKEN CSRF
     FALTA CADASTRO(com o codigo 'TOKEN'), NOVAS MEDIDAS E PERFIL(testar)
-
-    fazer pagina de troca de senha
+    (
+        falta validar se o email de cadastro ja existe e se ja existir dar erro.
+    )
 
     DEIXAR AS QUERYS TODAS ENCRIPTADAS NO INSERT E DESCRIPTAR NO SELECT
+    (
+        mudar todo o banco de dados dar truncate e dai começar a usar encriptação
+    )
 
     verificar os erros de usuario feminino e conferir os calculos. (erros: controllers)
 
@@ -29,8 +39,6 @@ pendencias:
     arrumar os calculos e pagina sobre IMC body fat e basal explicando sobre cada sexo.
 
     a apresentação de dados do usuario tem q ser melhorada
-
-    e primeira pgn nos mostramos a valor do ultimo id UserModel desta pessoa
 
     tirar o informações sobre o corpo e deixar no acesso livre no navbar do home (estilizar as duas paginas)
 

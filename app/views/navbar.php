@@ -61,7 +61,7 @@ if (check_session()) {
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="?ct=main&mt=change_password"><i class="fa-solid fa-key me-2"></i>Alterar Senha</i></a></li>
+                        <li><a class="dropdown-item" href="?ct=reset&mt=pass_recover_form"><i class="fa-solid fa-key me-2"></i>Alterar Senha</i></a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
